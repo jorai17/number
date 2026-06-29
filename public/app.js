@@ -476,8 +476,8 @@
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "swap-cell-btn" + (cell.swapped ? " swapped" : "");
-      btn.textContent = cell.value;
-      btn.title = cell.swapped ? `Ô #${idx + 1} (đã đổi)` : `Ô #${idx + 1}`;
+      btn.textContent = cell.swapped ? "???" : cell.value;
+      btn.title = cell.swapped ? `Ô #${idx + 1} (đã đổi — ẩn giá trị)` : `Ô #${idx + 1}`;
 
       // Disable nếu chưa đủ điều kiện đổi lại (đã đổi rồi nhưng chưa đủ 15 ô / chưa đủ 15 lượt)
       let disabled = false;
