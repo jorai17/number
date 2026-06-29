@@ -1,0 +1,997 @@
+/* ============================================================
+   ĐẾM SỐ — Theme: "Sân khấu trong đêm"
+   Palette: nền than đen ánh xanh (#0B0D14), ánh đèn sân khấu vàng cam
+   (#FFB347 / #FF7A3D), nhấn đỏ báo nguy (#E8473A), nhấn xanh ngọc
+   thành công (#36D9B0). Font số: 'Space Grotesk' (display, géométrique),
+   chữ thường: 'Inter'. Font đếm số lớn dùng 'JetBrains Mono' để có cảm
+   giác bảng hiển thị cơ khí.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap');
+
+:root {
+  --bg-void: #0B0D14;
+  --bg-panel: #151826;
+  --bg-panel-light: #1E2235;
+  --spotlight: #FFB347;
+  --spotlight-hot: #FF7A3D;
+  --danger: #E8473A;
+  --success: #36D9B0;
+  --text-main: #F0EEE6;
+  --text-dim: #8A8DA0;
+  --border-soft: rgba(255, 255, 255, 0.08);
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--bg-void);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  overflow: hidden;
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: none;
+}
+
+input {
+  font-family: var(--font-body);
+}
+
+/* ============ Screens ============ */
+.screen {
+  display: none;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  position: relative;
+}
+.screen.active {
+  display: block;
+}
+
+/* ============ Toast ============ */
+.toast-container {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  pointer-events: none;
+}
+.toast {
+  background: var(--bg-panel-light);
+  border: 1px solid var(--border-soft);
+  border-left: 3px solid var(--spotlight);
+  color: var(--text-main);
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  animation: toastIn 0.25s ease-out;
+}
+.toast.danger { border-left-color: var(--danger); }
+.toast.success { border-left-color: var(--success); }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============ HOME SCREEN ============ */
+#screen-home {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 30%, rgba(255,179,71,0.10), transparent 70%),
+    var(--bg-void);
+}
+#screen-home.active {
+  display: flex;
+}
+
+.home-card {
+  width: min(420px, 90vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+
+.game-title {
+  font-family: var(--font-display);
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  margin: 0;
+  color: var(--text-main);
+  text-shadow: 0 0 30px rgba(255,179,71,0.35);
+}
+
+.profile-setup {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.avatar-preview {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: var(--bg-panel);
+  border: 2px solid var(--spotlight);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  box-shadow: 0 0 24px rgba(255,179,71,0.25);
+}
+
+#nameInput {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+  background: var(--bg-panel);
+  color: var(--text-main);
+  font-size: 15px;
+  text-align: center;
+  outline: none;
+}
+#nameInput:focus {
+  border-color: var(--spotlight);
+}
+
+.avatar-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.avatar-option {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-panel);
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.avatar-option:hover {
+  transform: scale(1.08);
+}
+.avatar-option.selected {
+  border-color: var(--spotlight);
+}
+
+.home-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-rules {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  color: var(--text-dim);
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.btn-rules:hover {
+  border-color: var(--spotlight);
+  color: var(--spotlight);
+  background: rgba(255,179,71,0.06);
+}
+
+/* ============ RULES MODAL ============ */
+.rules-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  padding: 16px;
+}
+.rules-modal-content {
+  width: min(420px, 100%);
+  background: var(--bg-panel);
+  border: 1px solid var(--spotlight);
+  border-radius: 16px;
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.rules-modal-content h3 {
+  font-family: var(--font-display);
+  margin: 0;
+  font-size: 20px;
+  color: var(--spotlight);
+}
+.rules-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.rules-list li {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-main);
+  padding-left: 22px;
+  position: relative;
+}
+.rules-list li::before {
+  content: '●';
+  position: absolute;
+  left: 0;
+  color: var(--spotlight);
+  font-size: 10px;
+  top: 6px;
+}
+.rules-list strong {
+  color: var(--spotlight);
+  font-weight: 700;
+}
+
+.btn {
+  font-family: var(--font-display);
+  font-weight: 700;
+  border-radius: 12px;
+  padding: 12px 28px;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  transition: transform 0.12s, box-shadow 0.12s, opacity 0.12s;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--spotlight), var(--spotlight-hot));
+  color: #1A1300;
+  box-shadow: 0 6px 20px rgba(255,122,61,0.3);
+}
+.btn-primary:hover:not(:disabled) {
+  box-shadow: 0 8px 24px rgba(255,122,61,0.45);
+}
+
+.btn-secondary {
+  background: var(--bg-panel-light);
+  color: var(--text-main);
+  border: 1px solid var(--border-soft);
+}
+.btn-secondary:hover {
+  background: var(--bg-panel);
+}
+
+.btn-large {
+  width: 100%;
+  padding: 18px 28px;
+  font-size: 18px;
+}
+
+/* ============ FIND ROOM SCREEN ============ */
+#screen-find {
+  background: var(--bg-void);
+  display: none;
+  flex-direction: column;
+}
+#screen-find.active { display: flex; }
+
+.find-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.find-header h2 {
+  font-family: var(--font-display);
+  margin: 0;
+  font-size: 22px;
+}
+.btn-icon {
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+.btn-icon:hover {
+  background: var(--bg-panel);
+  color: var(--text-main);
+}
+
+.find-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+.find-left, .find-right {
+  flex: 1;
+  padding: 24px 28px;
+  overflow-y: auto;
+}
+.find-left {
+  border-right: 1px solid var(--border-soft);
+}
+.find-left h3, .find-right h3 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--text-dim);
+  margin: 0 0 16px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.hint-text {
+  color: var(--text-dim);
+  font-size: 13px;
+  margin: 0 0 16px 0;
+}
+
+.public-rooms-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.empty-hint {
+  color: var(--text-dim);
+  font-size: 14px;
+}
+.public-room-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: border-color 0.15s;
+}
+.public-room-card:hover {
+  border-color: var(--spotlight);
+}
+.public-room-card .room-code {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--spotlight);
+}
+.public-room-card .room-info {
+  color: var(--text-dim);
+  font-size: 13px;
+}
+.public-room-card button {
+  background: var(--bg-panel-light);
+  color: var(--text-main);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+.public-room-card button:hover {
+  background: var(--spotlight);
+  color: #1A1300;
+}
+
+#roomCodeSearchInput {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+  background: var(--bg-panel);
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: 18px;
+  letter-spacing: 3px;
+  text-align: center;
+  text-transform: uppercase;
+  outline: none;
+  margin-bottom: 12px;
+}
+#roomCodeSearchInput:focus { border-color: var(--spotlight); }
+.search-result {
+  margin-top: 16px;
+}
+
+/* ============ ROOM SCREEN ============ */
+#screen-room {
+  background: radial-gradient(ellipse 70% 60% at 50% 45%, rgba(20,22,34,1), var(--bg-void) 75%);
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+#screen-room.active { display: block; }
+
+.room-topbar {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  z-index: 20;
+}
+.btn-leave-room {
+  position: absolute;
+  top: 18px;
+  left: 22px;
+  z-index: 20;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  color: var(--text-main);
+  padding: 9px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  transition: border-color 0.15s, background 0.15s;
+}
+.btn-leave-room:hover {
+  border-color: var(--danger);
+  background: rgba(232,71,58,0.08);
+}
+.room-code-badge {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 3px;
+  background: var(--bg-panel);
+  border: 1px solid var(--spotlight);
+  color: var(--spotlight);
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+
+.hexagon-arena {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Vị trí 6 slot - đặt theo % tương đối với khung arena, dạng lục giác đều */
+.player-slot {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: opacity 0.3s, filter 0.3s;
+}
+
+.slot-avatar-wrap {
+  position: relative;
+  width: 72px;
+  height: 72px;
+}
+
+.slot-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--bg-panel);
+  border: 3px solid var(--border-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  transition: border-color 0.2s, box-shadow 0.3s;
+}
+
+.slot-empty {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.02);
+  border: 2px dashed var(--border-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.slot-empty:hover {
+  border-color: var(--spotlight);
+  background: rgba(255,179,71,0.06);
+}
+
+.slot-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  text-align: center;
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.slot-holder-badge {
+  position: absolute;
+  top: -6px;
+  right: -2px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--spotlight);
+  color: #1A1300;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.slot-kick-btn {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--danger);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--bg-void);
+  transition: transform 0.15s;
+}
+.slot-kick-btn:hover {
+  transform: scale(1.15);
+}
+
+/* Trạng thái trong game */
+.player-slot.spectator .slot-avatar {
+  opacity: 0.35;
+  filter: grayscale(1);
+}
+.player-slot.spectator .slot-name {
+  opacity: 0.4;
+}
+.player-slot.spotlight .slot-avatar {
+  border-color: var(--spotlight);
+  box-shadow: 0 0 0 6px rgba(255,179,71,0.18), 0 0 40px rgba(255,179,71,0.6);
+}
+.player-slot.spotlight .slot-name {
+  color: var(--spotlight);
+}
+.player-slot.eliminated-flash .slot-avatar {
+  border-color: var(--danger);
+  box-shadow: 0 0 30px rgba(232,71,58,0.7);
+}
+
+/* Dimming sân khấu khi đang chơi */
+.hexagon-arena.dimmed::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+.hexagon-arena .player-slot,
+.hexagon-arena .arena-center {
+  z-index: 2;
+}
+
+.arena-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: min(280px, 60vw);
+  text-align: center;
+}
+
+.btn-start {
+  padding: 14px 36px;
+  font-size: 16px;
+  border-radius: 14px;
+}
+
+.center-announcement {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--text-main);
+  background: rgba(21,24,38,0.85);
+  border: 1px solid var(--border-soft);
+  padding: 10px 18px;
+  border-radius: 10px;
+  min-height: 20px;
+  display: none;
+}
+.center-announcement.show {
+  display: block;
+  animation: fadeInOut 2.5s ease-in-out;
+}
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(6px); }
+  15% { opacity: 1; transform: translateY(0); }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.waiting-next-game {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--spotlight);
+  background: rgba(21,24,38,0.9);
+  border: 1px solid var(--spotlight);
+  padding: 14px 20px;
+  border-radius: 12px;
+}
+.hidden { display: none !important; }
+
+.btn-toggle-public {
+  position: absolute;
+  bottom: 18px;
+  right: 22px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  color: var(--text-main);
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 20;
+}
+.btn-toggle-public.is-public {
+  border-color: var(--success);
+  color: var(--success);
+}
+.btn-toggle-public.is-private {
+  border-color: var(--text-dim);
+  color: var(--text-dim);
+}
+
+/* ============ CHAT ============ */
+.chat-panel {
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  width: 300px;
+  max-height: 280px;
+  display: flex;
+  flex-direction: column;
+  z-index: 20;
+}
+.chat-messages {
+  background: rgba(21,24,38,0.85);
+  border: 1px solid var(--border-soft);
+  border-radius: 10px 10px 0 0;
+  flex: 1;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 10px 12px;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.chat-msg .chat-name {
+  color: var(--spotlight);
+  font-weight: 600;
+  margin-right: 4px;
+}
+.chat-msg .chat-text {
+  color: var(--text-main);
+}
+.chat-msg.system .chat-text {
+  color: var(--text-dim);
+  font-style: italic;
+}
+.chat-input-row {
+  display: flex;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  overflow: hidden;
+}
+.chat-input-row input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  padding: 10px 12px;
+  font-size: 13px;
+  outline: none;
+}
+.btn-icon-send {
+  background: var(--spotlight);
+  color: #1A1300;
+  width: 40px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ============ TURN INPUT BAR ============ */
+.turn-input-bar {
+  position: absolute;
+  bottom: 18px;
+  right: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-panel-light);
+  border: 2px solid var(--spotlight);
+  border-radius: 14px;
+  padding: 10px 14px;
+  z-index: 25;
+  box-shadow: 0 0 30px rgba(255,179,71,0.35);
+}
+.turn-timer-ring {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--spotlight);
+  color: #1A1300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+#turnInput {
+  width: 140px;
+  background: var(--bg-void);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  color: var(--text-main);
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  outline: none;
+}
+#turnInput:focus { border-color: var(--spotlight); }
+
+/* ============ SWAP MODAL ============ */
+.swap-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+.swap-modal-content {
+  width: min(440px, 90vw);
+  background: var(--bg-panel);
+  border: 1px solid var(--spotlight);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.swap-modal-content h3 {
+  font-family: var(--font-display);
+  margin: 0;
+  font-size: 20px;
+  color: var(--spotlight);
+}
+.swap-cells-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+.swap-cell-btn {
+  background: var(--bg-panel-light);
+  border: 2px solid var(--border-soft);
+  color: var(--text-main);
+  border-radius: 8px;
+  padding: 8px 4px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.swap-cell-btn.selected {
+  border-color: var(--spotlight);
+  background: rgba(255,179,71,0.15);
+}
+.swap-cell-btn.swapped {
+  color: var(--success);
+}
+.swap-cell-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+#swapWordInput {
+  background: var(--bg-void);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  color: var(--text-main);
+  padding: 10px 14px;
+  font-size: 15px;
+  outline: none;
+}
+#swapWordInput:focus { border-color: var(--spotlight); }
+.swap-timer-text {
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  font-size: 13px;
+}
+.swap-error {
+  color: var(--danger);
+  font-size: 13px;
+  margin: 0;
+  min-height: 16px;
+}
+
+/* ============ Responsive: Mobile ============
+   Breakpoint chính: 700px. Trên mobile, room screen chuyển sang layout
+   flex-column thay vì absolute positioning tự do, để tránh các panel
+   (chat, turn bar, hexagon) chồng lên nhau trên màn hình hẹp.
+*/
+@media (max-width: 700px) {
+  /* ---- Chung ---- */
+  .btn-large { font-size: 16px; padding: 16px 24px; }
+  .game-title { font-size: 32px; }
+  .home-card { gap: 22px; }
+  .avatar-preview { width: 72px; height: 72px; font-size: 36px; }
+  .avatar-option { width: 48px; height: 48px; } /* giữ ≥44px cho touch target */
+  .btn-rules { bottom: 14px; left: 14px; padding: 9px 14px; font-size: 12px; }
+
+  /* ---- Find room: 1 cột, cuộn dọc ---- */
+  .find-header { padding: 14px 16px; }
+  .find-body { flex-direction: column; overflow-y: auto; }
+  .find-left, .find-right { padding: 18px 16px; flex: none; }
+  .find-left { border-right: none; border-bottom: 1px solid var(--border-soft); }
+
+  /* ---- Room screen: chuyển sang flex-column ---- */
+  #screen-room.active {
+    display: flex;
+    flex-direction: column;
+  }
+  .btn-leave-room {
+    top: 10px;
+    left: 10px;
+    padding: 8px 12px;
+    font-size: 12px;
+    z-index: 30;
+  }
+  .room-topbar { top: 10px; right: 10px; }
+  .room-code-badge { font-size: 14px; padding: 6px 12px; letter-spacing: 2px; }
+
+  /* Khu vực lục giác chiếm phần còn lại phía trên, chừa chỗ cho chat + turn bar phía dưới */
+  .hexagon-arena {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding-top: 44px; /* tránh đè lên nút thoát phòng / mã phòng */
+    padding-bottom: 8px;
+  }
+  .player-slot { width: 76px; height: 76px; }
+  .slot-avatar, .slot-empty { width: 52px; height: 52px; font-size: 24px; }
+  .slot-name { font-size: 11px; max-width: 76px; }
+  .slot-holder-badge { width: 20px; height: 20px; font-size: 10px; }
+  .slot-kick-btn { width: 20px; height: 20px; font-size: 11px; }
+  .arena-center { width: min(220px, 70vw); gap: 10px; }
+  .btn-start { padding: 11px 26px; font-size: 14px; }
+  .center-announcement { font-size: 13px; padding: 8px 14px; }
+
+  .btn-toggle-public {
+    position: static;
+    align-self: center;
+    margin: 4px auto 8px;
+    font-size: 12px;
+    padding: 8px 14px;
+  }
+
+  /* Chat: thanh ngang gọn ở dưới cùng, không che hexagon */
+  .chat-panel {
+    position: static;
+    width: 100%;
+    max-height: 30vh;
+    flex-shrink: 0;
+    z-index: 20;
+  }
+  .chat-messages {
+    max-height: 18vh;
+    font-size: 12px;
+    border-radius: 0;
+  }
+  .chat-input-row { border-radius: 0; }
+
+  /* Turn input bar: full-width nổi trên cùng, đè lên phía trên chat khi tới lượt */
+  .turn-input-bar {
+    position: fixed;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    width: auto;
+    justify-content: center;
+  }
+  .turn-input-bar:not(.hidden) {
+    z-index: 25;
+  }
+  body.turn-active-mobile .chat-input-row {
+    display: none;
+  }
+  #turnInput { flex: 1; width: auto; min-width: 0; }
+
+  /* Swap modal full-width hơn trên mobile */
+  .swap-modal-content { padding: 20px; }
+  .swap-cells-grid { grid-template-columns: repeat(5, 1fr); max-height: 140px; }
+
+  /* Rules modal */
+  .rules-modal-content { padding: 20px; }
+}
+
+/* Màn hình rất nhỏ (điện thoại nhỏ, < 380px) */
+@media (max-width: 380px) {
+  .player-slot { width: 64px; height: 64px; }
+  .slot-avatar, .slot-empty { width: 44px; height: 44px; font-size: 20px; }
+  .slot-name { font-size: 10px; max-width: 64px; }
+  .game-title { font-size: 26px; }
+}
+
+/* Màn hình thấp (landscape điện thoại) */
+@media (max-height: 480px) and (orientation: landscape) {
+  .hexagon-arena { padding-top: 34px; }
+  .chat-panel { max-height: 26vh; }
+  .chat-messages { max-height: 14vh; }
+}

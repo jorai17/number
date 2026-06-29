@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>Đếm Số - Game nhiều người chơi</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ============ TOAST / NOTIFICATIONS ============ -->
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- ============ SCREEN: HOME (Sảnh chính) ============ -->
+<section id="screen-home" class="screen active">
+  <div class="home-card">
+    <h1 class="game-title">ĐẾM SỐ</h1>
+
+    <div class="profile-setup">
+      <div class="avatar-preview" id="avatarPreview">🙂</div>
+      <input type="text" id="nameInput" maxlength="20" placeholder="Nhập tên của bạn..." />
+      <div class="avatar-picker" id="avatarPicker"></div>
+    </div>
+
+    <div class="home-actions">
+      <button id="btnCreateRoom" class="btn btn-primary btn-large">Tạo phòng</button>
+      <button id="btnFindRoom" class="btn btn-secondary">Tìm phòng</button>
+    </div>
+  </div>
+
+  <button id="btnShowRules" class="btn-rules" type="button">📖 Luật chơi</button>
+</section>
+
+<!-- ============ MODAL: RULES (Luật chơi) ============ -->
+<div id="rulesModal" class="rules-modal hidden">
+  <div class="rules-modal-content">
+    <h3>Luật chơi</h3>
+    <ul class="rules-list">
+      <li>6 người chơi đếm vòng tròn từ <strong>1 đến 30</strong>, lần lượt theo chiều kim đồng hồ.</li>
+      <li>Ai nhập <strong>sai</strong> sẽ bị loại ngay khỏi vòng đếm.</li>
+      <li>Người nhập đúng số <strong>30</strong> được quyền đổi 1 số thành 1 từ bất kỳ — từ đó người khác phải nhập đúng từ ấy thay vì số gốc.</li>
+      <li>Trò chơi kết thúc khi chỉ còn <strong>1 người</strong> trụ lại — đó là người thắng!</li>
+    </ul>
+    <button id="btnCloseRules" class="btn btn-primary">Đã hiểu</button>
+  </div>
+</div>
+
+<!-- ============ SCREEN: FIND ROOM (Tìm phòng) ============ -->
+<section id="screen-find" class="screen">
+  <div class="find-header">
+    <button id="btnBackFromFind" class="btn-icon">← Quay lại</button>
+    <h2>Tìm phòng</h2>
+  </div>
+  <div class="find-body">
+    <div class="find-left">
+      <h3>Phòng công khai</h3>
+      <div id="publicRoomsList" class="public-rooms-list">
+        <p class="empty-hint">Chưa có phòng công khai nào.</p>
+      </div>
+    </div>
+    <div class="find-right">
+      <h3>Tìm theo mã phòng</h3>
+      <p class="hint-text">Có thể tìm cả phòng riêng tư bằng mã.</p>
+      <input type="text" id="roomCodeSearchInput" maxlength="6" placeholder="Nhập mã phòng (6 ký tự)" />
+      <button id="btnSearchRoom" class="btn btn-primary">Tìm</button>
+      <div id="searchResult" class="search-result"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCREEN: ROOM (Phòng chờ) ============ -->
+<section id="screen-room" class="screen">
+  <button id="btnLeaveRoom" class="btn-leave-room">← Thoát phòng</button>
+
+  <div class="room-topbar">
+    <div class="room-code-badge" id="roomCodeBadge">------</div>
+  </div>
+
+  <div class="hexagon-arena" id="hexagonArena">
+    <!-- 6 slot sẽ được JS render vào đây -->
+    <div class="arena-center" id="arenaCenter">
+      <button id="btnStartGame" class="btn btn-primary btn-start" disabled>Bắt đầu</button>
+      <div id="centerAnnouncement" class="center-announcement"></div>
+      <div id="waitingNextGame" class="waiting-next-game hidden"></div>
+    </div>
+  </div>
+
+  <button id="btnTogglePublic" class="btn btn-toggle-public">🌐 Công khai</button>
+
+  <!-- Chat -->
+  <div class="chat-panel">
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-row">
+      <input type="text" id="chatInput" maxlength="200" placeholder="Nhập tin nhắn / số..." />
+      <button id="btnChatSend" class="btn-icon-send">➤</button>
+    </div>
+  </div>
+
+  <!-- Turn input bar (góc màn hình khi tới lượt) -->
+  <div id="turnInputBar" class="turn-input-bar hidden">
+    <div class="turn-timer-ring">
+      <span id="turnTimerText">10</span>
+    </div>
+    <input type="text" id="turnInput" maxlength="20" placeholder="Nhập số/từ..." autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="text" />
+    <button id="btnTurnSubmit" class="btn-icon-send">➤</button>
+  </div>
+
+  <!-- Swap input modal -->
+  <div id="swapModal" class="swap-modal hidden">
+    <div class="swap-modal-content">
+      <h3>Bạn được đổi 1 số!</h3>
+      <p class="hint-text">Chọn ô muốn đổi và nhập từ mới (tối đa 10 ký tự)</p>
+      <div class="swap-cells-grid" id="swapCellsGrid"></div>
+      <input type="text" id="swapWordInput" maxlength="10" placeholder="Từ mới..." autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" />
+      <div class="swap-timer-text" id="swapTimerText">30s</div>
+      <button id="btnSwapSubmit" class="btn btn-primary">Gửi</button>
+      <p class="swap-error" id="swapError"></p>
+    </div>
+  </div>
+</section>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
