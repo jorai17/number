@@ -1,0 +1,17 @@
+{
+  "name": "number-game",
+  "version": "1.0.0",
+  "description": "Game đếm số 1-30 nhiều người chơi - real-time qua Socket.io",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
